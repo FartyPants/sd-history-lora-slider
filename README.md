@@ -5,8 +5,6 @@ Lora Weight Sliders and Prompt History
 I piggybacked it on the simple history slider
 https://github.com/LucasMali/sd-history-slider
 
-Similarly to that have DrawThings.ai but for AUTOMATIC 1111 Stable Diffusion Webui.
-
 <img width="1241" height="376" alt="image" src="https://github.com/user-attachments/assets/88a6cdda-9725-4ae8-af68-323692f62ecb" />
 
 
