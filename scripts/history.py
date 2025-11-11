@@ -1,0 +1,82 @@
+import gradio as gr
+from modules import scripts
+from modules.ui_components import FormGroup
+
+
+def create_history_slider(tabname):
+   with FormGroup(elem_id=f"{tabname}_history_slider_form_group"):
+        history = gr.Slider(
+            minimum=1,
+            maximum=1,
+            step=1,
+            elem_id=f"{tabname}_prompt_history_slider",
+            label="Prompt History",
+            value=1,
+        )
+        history.input(
+            fn=lambda *x: x,
+            _js="function(){update_prompt_history('" + tabname + "')}",
+            inputs=None,
+            outputs=None,
+        )
+        history.release( #this is for the case where the user goes too fast or off the page.
+            fn=lambda *x: x,
+            _js="function(){update_prompt_history('" + tabname + "')}",
+            inputs=None,
+            outputs=None,
+        )
+
+        return history
+
+class HistoryScript(scripts.Script):
+    def __init__(self) -> None:
+        super().__init__()
+
+    def title(self):
+        return "HistoryAndLora"
+
+    def show(self, is_img2img):
+        return scripts.AlwaysVisible
+
+    def ui(self, is_img2img):
+        id_part = "img2img" if is_img2img else "txt2img"
+        with gr.Group():
+            with gr.Row(elem_id=f"{id_part}_history_top_row", variant="compact", scale=100):
+                with gr.Column(elem_id="history_col", scale=11):
+                    history_slider = create_history_slider(id_part)
+                with gr.Column(elem_id="history_col", scale=1):
+                    with gr.Row(elem_id="history_button_row", variant="compact"):
+                        clear_history = gr.Button("Clear History", visible=True, label="Clear history")
+                        clear_history.click(
+                            fn=lambda *x: x,
+                            _js="function(){confirm_clear_history('" + id_part + "')}",
+                            inputs=None,
+                            outputs=None,
+                        )
+                        load_history = gr.Button("Load", visible=False, label="Load history")
+                        load_history.click(
+                            fn=lambda *x: x,
+                            _js="function(){load_history('" + id_part + "')}",
+                            inputs=None,
+                            outputs=None,
+                        )
+            
+            # --- MODIFICATION START ---
+            lora_sliders = []
+            # Create a single row for all Lora sliders
+            with gr.Row(elem_id=f"{id_part}_lora_weights_row", variant="compact"):
+                for i in range(1, 4):
+                    with gr.Column():
+                        lora_slider = gr.Slider(
+                            minimum=0,
+                            maximum=1,
+                            step=0.05,
+                            label=f"Lora {i}: N/A",
+                            value=1.0,
+                            elem_id=f"{id_part}_lora_weights_slider_{i}",
+                            interactive=False # Sliders are disabled by default
+                        )
+                        lora_sliders.append(lora_slider)
+            # --- MODIFICATION END ---
+                        
+        return [history_slider, clear_history, load_history] + lora_sliders
