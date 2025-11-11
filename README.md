@@ -14,8 +14,8 @@ https://github.com/LucasMali/sd-history-slider
 - It will allow a user to load the history stored on local storage. (I had hidden the button)
 - It will allow a user to clear the prompt history.
 
-- my additions
-- first three loras used in prompt will have attached slider and moving the slider will change the lora weights
+my additions:
+- first three loras used in prompt will have attached slider and moving the slider will change the lora weights as well as changing the prompt will update the sliders
 
 ## TODO
 - Put a max threshold on the prompt's history.
