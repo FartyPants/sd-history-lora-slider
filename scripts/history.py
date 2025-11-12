@@ -41,10 +41,13 @@ class HistoryScript(scripts.Script):
     def ui(self, is_img2img):
         id_part = "img2img" if is_img2img else "txt2img"
         with gr.Group():
-            with gr.Row(elem_id=f"{id_part}_history_top_row", variant="compact", scale=100):
+            # --- MODIFICATION START ---
+            # REMOVED scale=100 from this gr.Row as it is not a valid argument
+            with gr.Row(elem_id=f"{id_part}_history_top_row", variant="compact"):
+            # --- MODIFICATION END ---
                 with gr.Column(elem_id="history_col", scale=11):
                     history_slider = create_history_slider(id_part)
-                with gr.Column(elem_id="history_col", scale=1):
+                with gr.Column(elem_id="history_col", min_width=200, scale=1): # Using min_width is also a good practice here
                     with gr.Row(elem_id="history_button_row", variant="compact"):
                         clear_history = gr.Button("Clear History", visible=True, label="Clear history")
                         clear_history.click(
@@ -61,7 +64,6 @@ class HistoryScript(scripts.Script):
                             outputs=None,
                         )
             
-            # --- MODIFICATION START ---
             lora_sliders = []
             # Create a single row for all Lora sliders
             with gr.Row(elem_id=f"{id_part}_lora_weights_row", variant="compact"):
@@ -77,6 +79,5 @@ class HistoryScript(scripts.Script):
                             interactive=False # Sliders are disabled by default
                         )
                         lora_sliders.append(lora_slider)
-            # --- MODIFICATION END ---
                         
         return [history_slider, clear_history, load_history] + lora_sliders
